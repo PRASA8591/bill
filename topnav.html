@@ -1,0 +1,21 @@
+<div class="topnav">
+    <a href="dashboard.html">🏠 Dashboard</a>
+    <a href="billing.html">🧾 Billing</a>
+    <a href="inventory.html">📦 Inventory</a>
+    <a href="reports.html">📊 Reports</a>
+    <a href="settings.html">⚙️ Settings</a>
+    <a href="users.html" class="admin-only">👤 Users</a>
+    <span class="right"><button onclick="logout()">🚪 Logout</button></span>
+  </div>
+  
+  <script>
+    const role = sessionStorage.getItem("role");
+    if (role !== "admin") {
+      document.querySelectorAll(".admin-only").forEach(el => el.style.display = "none");
+    }
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = "index.html";
+    }
+  </script>
+  

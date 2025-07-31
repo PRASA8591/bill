@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inventory Management</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="1logo.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #EDF2F4;
+      padding-top: 60px;
+    }
+    .topnav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #2B2D42;
+      z-index: 1000;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .topnav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+    .topnav a:hover {
+      background-color: #EF233C;
+    }
+    .topnav .right {
+      margin-left: auto;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table th, table td {
+      padding: 12px;
+      text-align: center;
+      border: 1px solid #ccc;
+    }
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    form input, form button {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      flex: 1;
+    }
+    form button {
+      background-color: #EF233C;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="topnav">
+    <a href="dashboard.html">🏠 Dashboard</a>
+    <a href="billing.html">📟 Billing</a>
+    <a href="inventory.html">📦 Inventory</a>
+    <a href="reports.html">📊 Reports</a>
+    <a href="settings.html">⚙️ Settings</a>
+    <a href="users.html" class="admin-only">👤 Users</a>
+    <span class="right"><button onclick="logout()">🚪 Logout</button></span>
+  </div>
+
+  <div class="container">
+    <h2>📦 Inventory</h2>
+    <form id="addItemForm">
+      <input type="text" id="name" placeholder="Item Name" required />
+      <input type="text" id="code" placeholder="Item Code" required />
+      <input type="number" id="cost" placeholder="Cost Price" required />
+      <input type="number" id="price" placeholder="Selling Price" required />
+      <input type="number" id="qty" placeholder="Quantity" required />
+      <button type="submit">➕ Add Item</button>
+    </form>
+
+    <table id="inventoryTable">
+      <thead>
+        <tr><th>Name</th><th>Code</th><th>Cost</th><th>Price</th><th>Qty</th><th>Actions</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="firebase.js"></script>
+  <script src="inventory.js"></script>
+</body>
+</html>

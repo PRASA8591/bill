@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | POS</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="1logo.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    .topnav {
+      background-color: #2B2D42;
+      overflow: hidden;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .topnav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+    .topnav a:hover {
+      background-color: #EF233C;
+    }
+    .topnav .right {
+      margin-left: auto;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation -->
+  <div class="topnav">
+    <a href="dashboard.html">🏠 Dashboard</a>
+    <a href="billing.html">🧾 Billing</a>
+    <a href="inventory.html">📦 Inventory</a>
+    <a href="reports.html">📊 Reports</a>
+    <a href="settings.html">⚙️ Settings</a>
+    <a href="users.html" class="admin-only">👤 Users</a>
+    <span class="right"><button onclick="logout()">🚪 Logout</button></span>
+  </div>
+
+  <!-- Dashboard Summary -->
+  <div class="dashboard-container">
+    <h2>Welcome, <span id="usernameDisplay"></span>!</h2>
+    <p>Your role: <span id="roleDisplay"></span></p>
+  </div>
+
+  <script>
+    const username = sessionStorage.getItem("username");
+    const role = sessionStorage.getItem("role");
+
+    if (!username) {
+      window.location.href = "index.html";
+    }
+
+    document.getElementById("usernameDisplay").textContent = username;
+    document.getElementById("roleDisplay").textContent = role;
+
+    if (role !== "admin") {
+      document.querySelectorAll(".admin-only").forEach(el => el.style.display = "none");
+    }
+
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>

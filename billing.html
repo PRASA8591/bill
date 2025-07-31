@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Billing | POS</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- Top Navigation -->
+  <div class="topnav">
+    <a href="dashboard.html">🏠 Dashboard</a>
+    <a href="billing.html">🧾 Billing</a>
+    <a href="inventory.html">📦 Inventory</a>
+    <a href="reports.html">📊 Reports</a>
+    <a href="settings.html">⚙️ Settings</a>
+    <a href="users.html" class="admin-only">👤 Users</a>
+    <span class="right"><button onclick="logout()">🚪 Logout</button></span>
+  </div>
+
+  <div class="billing-container">
+    <h2>🧾 New Sale</h2>
+
+    <div class="billing-form">
+      <select id="itemSelect">
+        <option value="">-- Select Item --</option>
+      </select>
+      <input type="number" id="quantity" placeholder="Qty" value="1" min="1" />
+      <button onclick="addItem()">➕ Add</button>
+    </div>
+
+    <table class="billing-table">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Total</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="cartBody"></tbody>
+    </table>
+
+    <div class="billing-summary">
+      <p>Subtotal: LKR <span id="subtotal">0.00</span></p>
+      <button onclick="saveBill()">💾 Confirm Pay & Print</button>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="firebase.js"></script>
+  <script src="billing.js"></script>
+
+  <style>
+    body { margin: 0; font-family: 'Poppins', sans-serif; background-color: #EDF2F4; padding-top: 60px; }
+    .topnav { position: fixed; top: 0; left: 0; width: 100%; background-color: #2B2D42; z-index: 1000; padding: 10px 20px; display: flex; align-items: center; gap: 15px; }
+    .topnav a { color: #fff; text-decoration: none; font-weight: 500; padding: 8px 12px; border-radius: 6px; }
+    .topnav a:hover { background-color: #EF233C; }
+    .topnav .right { margin-left: auto; }
+    .billing-container { max-width: 600px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .billing-form { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 25px; align-items: center; }
+    .billing-form input, .billing-form button, .billing-form select { padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; }
+    .billing-form input, .billing-form select { flex: 1; }
+    .billing-form button { background-color: #EF233C; color: white; border: none; cursor: pointer; }
+    .billing-form button:hover { background-color: #D90429; }
+    table.billing-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    .billing-table th, .billing-table td { padding: 10px; border: 1px solid #ccc; text-align: center; }
+    .billing-summary { text-align: right; font-size: 18px; margin-top: 15px; }
+    .billing-summary button { margin-top: 10px; padding: 12px 20px; background-color: #06D6A0; color: white; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; }
+    .billing-summary button:hover { background-color: #04B58A; }
+  </style>
+</body>
+</html>

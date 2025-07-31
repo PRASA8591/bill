@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management | POS</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="1logo.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #EDF2F4;
+      padding-top: 60px;
+    }
+    .topnav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #2B2D42;
+      z-index: 1000;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .topnav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+    .topnav a:hover {
+      background-color: #EF233C;
+    }
+    .topnav .right {
+      margin-left: auto;
+    }
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    form input, form select, form button {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="topnav">
+    <a href="dashboard.html">🏠 Dashboard</a>
+    <a href="billing.html">📟 Billing</a>
+    <a href="inventory.html">📦 Inventory</a>
+    <a href="reports.html">📊 Reports</a>
+    <a href="settings.html">⚙️ Settings</a>
+    <a href="users.html" class="admin-only">👤 Users</a>
+    <span class="right"><button onclick="logout()">🚪 Logout</button></span>
+  </div>
+
+  <div class="container">
+    <h2>👤 User Management (Admin Only)</h2>
+    <form id="userForm">
+      <input type="text" id="username" placeholder="Username" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <select id="role">
+        <option value="admin">Admin</option>
+        <option value="manager">Manager</option>
+        <option value="cashier">Cashier</option>
+        <option value="audit">Audit</option>
+      </select>
+      <button type="submit">Add</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Role</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="userTable"></tbody>
+    </table>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="firebase.js"></script>
+  <script>
+    const role = sessionStorage.getItem("role");
+    if (role !== "admin") {
+      alert("Access denied.");
+      window.location.href = "dashboard.html";
+    }
+
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = "index.html";
+    }
+
+    const form = document.getElementById("userForm");
+    const userTable = document.getElementById("userTable");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+      const role = document.getElementById("role").value;
+
+      if (!username || !password) return;
+
+      const existing = await db.collection("users").where("username", "==", username).get();
+      if (!existing.empty) {
+        alert("Username already exists.");
+        return;
+      }
+
+      await db.collection("users").add({ username, password, role });
+      form.reset();
+      loadUsers();
+    });
+
+    async function loadUsers() {
+      userTable.innerHTML = "";
+      const snapshot = await db.collection("users").get();
+      snapshot.forEach(doc => {
+        const user = doc.data();
+        userTable.innerHTML += `
+          <tr>
+            <td>${user.username}</td>
+            <td>${user.role}</td>
+            <td><button onclick="deleteUser('${doc.id}')">Delete</button></td>
+          </tr>`;
+      });
+    }
+
+    function deleteUser(id) {
+      if (confirm("Delete this user?")) {
+        db.collection("users").doc(id).delete().then(() => {
+          loadUsers();
+        });
+      }
+    }
+
+    loadUsers();
+  </script>
+</body>
+</html>

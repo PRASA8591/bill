@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>POS Settings</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="1logo.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #EDF2F4;
+      padding-top: 60px;
+    }
+    .topnav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #2B2D42;
+      z-index: 1000;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .topnav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+    .topnav a:hover {
+      background-color: #EF233C;
+    }
+    .topnav .right {
+      margin-left: auto;
+    }
+    .settings-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    #settingsForm {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    #preview {
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="topnav">
+    <a href="dashboard.html">🏠 Dashboard</a>
+    <a href="billing.html">📟 Billing</a>
+    <a href="inventory.html">📦 Inventory</a>
+    <a href="reports.html">📊 Reports</a>
+    <a href="settings.html">⚙️ Settings</a>
+    <a href="users.html" class="admin-only">👤 Users</a>
+    <span class="right"><button onclick="logout()">🚪 Logout</button></span>
+  </div>
+
+  <div class="settings-container">
+    <h2>⚙️ Business Settings</h2>
+    <form id="settingsForm">
+      <input type="text" id="businessName" placeholder="Business Name" required />
+      <input type="number" id="taxPercent" placeholder="Tax (%)" min="0" />
+      <input type="text" id="logoUrl" placeholder="Logo URL (optional)" />
+      <button type="submit">📂 Save Settings</button>
+    </form>
+    <div id="preview"></div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="js/firebase.js"></script>
+  <script>
+    const role = sessionStorage.getItem("role");
+    if (!role || role !== "admin") {
+      alert("Access Denied");
+      window.location.href = "dashboard.html";
+    }
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = "index.html";
+    }
+
+    const form = document.getElementById('settingsForm');
+    const nameInput = document.getElementById('businessName');
+    const taxInput = document.getElementById('taxPercent');
+    const logoInput = document.getElementById('logoUrl');
+    const preview = document.getElementById('preview');
+
+    const settingsRef = db.collection('settings').doc('main');
+
+    window.onload = loadSettings;
+
+    async function loadSettings() {
+      try {
+        const doc = await settingsRef.get();
+        if (doc.exists) {
+          const data = doc.data();
+          nameInput.value = data.name || "";
+          taxInput.value = data.tax || 0;
+          logoInput.value = data.logo || "";
+          if (data.logo) {
+            preview.innerHTML = `<img src="${data.logo}" alt="Logo" height="80" />`;
+          }
+        }
+      } catch (err) {
+        console.error("Error loading settings:", err);
+        alert("Failed to load settings.");
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = nameInput.value.trim();
+      const tax = parseFloat(taxInput.value);
+      const logo = logoInput.value.trim();
+      try {
+        await settingsRef.set({ name, tax, logo });
+        alert("Settings saved!");
+        if (logo) {
+          preview.innerHTML = `<img src="${logo}" alt="Logo" height="80" />`;
+        }
+      } catch (err) {
+        console.error("Error saving settings:", err);
+        alert("Failed to save.");
+      }
+    });
+  </script>
+</body>
+</html>
